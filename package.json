@@ -1,0 +1,25 @@
+{
+  "name": "advpl-parser-ts",
+  "version": "1.0.0",
+  "description": "Advpl Parser written in TypeScript",
+  "main": "index.js",
+  "scripts": {
+    "compile": "tsc",
+    "test": "mocha -r ts-node/register test/**/*.spec.ts"
+  },
+  "dependencies": {
+    "chevrotain": "*"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.4",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.1.1",
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "ts-node": "^7.0.0",
+    "typescript": "^2.7.0",
+    "typings": "^2.1.1"
+  },
+  "author": "",
+  "license": "ISC"
+}
