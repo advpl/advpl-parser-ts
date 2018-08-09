@@ -8,32 +8,52 @@ import {
 } from "chevrotain"
 import {genHTML} from '../util/gen_diagrams';
 //Tokens
-const Minor = createToken({ name: "Minor", pattern: /</ })
-const Major = createToken({ name: "Major", pattern: />/ })
-const Equals = createToken({ name: "Equals", pattern: /\=/ })
-const MinorEquals = createToken({ name: "MinorEquals", pattern: /\<\=/ })
-const MajorEquals = createToken({ name: "MajorEquals", pattern: />\=/ })
-const DoubleEquals = createToken({ name: "DoubleEquals", pattern: /\=\=/ })
-const NotEquals = createToken({ name: "NotEquals", pattern: /!\=/ })
-const NotEqualsOp2 = createToken({ name: "NotEqualsOp2", pattern: /<>/ })
-//const NotEqualsOp3 = createToken({ name: "NotEqualsOp3", pattern: /#/ })
-const Contained = createToken({ name: "Contained", pattern: /\$/ })
+
 const PlusPlus = createToken({ name: "PlusPlus", pattern: /\+\+/ })
 const MinusMinus = createToken({ name: "MinusMinus", pattern: /--/ })
-const PlusEquals = createToken({ name: "PlusEquals", pattern: /\+\=/ })
-
-const MinusEquals = createToken({ name: "MinusEquals", pattern: /-\=/ })
-const MultiEquals = createToken({ name: "MultiEquals", pattern: /\*\=/ })
-const DivEquals = createToken({ name: "DivEquals", pattern: /\/\=/ })
 
 
-const Plus = createToken({ name: "Plus", pattern: /\+/ })
-const Minus = createToken({ name: "Minus", pattern: /-/ })
-const Mult = createToken({ name: "Mult", pattern: /\*/ })
-const Div = createToken({ name: "Div", pattern: /\// })
-const Pow = createToken({ name: "Pow", pattern: /\*\*/ })
-const Pow2 = createToken({ name: "Pow", pattern: /\^/ })
-const Perc = createToken({ name: "Perc", pattern: /%/ })
+//---------------------------------------------------------------------
+// Lexes groups
+//---------------------------------------------------------------------
+const AdditionOperator  = createToken({ name: "AdditionOperator", pattern: Lexer.NA })
+const MultiplicationOperator   = createToken({ name: "MultiplicationOperator", pattern: Lexer.NA })
+const LiteralGroup   = createToken({ name: "LiteralGroup", pattern: Lexer.NA })
+const AssignmentGroup   = createToken({ name: "AssignmentGroup", pattern: Lexer.NA })
+const LogicGroup   = createToken({ name: "LogicGroup", pattern: Lexer.NA })
+const RelationalGroup   = createToken({ name: "RelationalGroup", pattern: Lexer.NA })
+
+//---------------------------------------------------------------------
+// Relational Tokens
+//---------------------------------------------------------------------
+const Minor = createToken({ name: "Minor", pattern: /</, categories:RelationalGroup})
+const Major = createToken({ name: "Major", pattern: />/, categories:RelationalGroup })
+const Equals = createToken({ name: "Equals", pattern: /\=/, categories:RelationalGroup  })
+const MinorEquals = createToken({ name: "MinorEquals", pattern: /\<\=/, categories:RelationalGroup  })
+const MajorEquals = createToken({ name: "MajorEquals", pattern: />\=/, categories:RelationalGroup  })
+const DoubleEquals = createToken({ name: "DoubleEquals", pattern: /\=\=/, categories:RelationalGroup  })
+const NotEquals = createToken({ name: "NotEquals", pattern: /!\=/, categories:RelationalGroup  })
+const NotEqualsOp2 = createToken({ name: "NotEqualsOp2", pattern: /<>/, categories:RelationalGroup  })
+//const NotEqualsOp3 = createToken({ name: "NotEqualsOp3", pattern: /#/ })
+const Contained = createToken({ name: "Contained", pattern: /\$/, categories:RelationalGroup  })
+
+//---------------------------------------------------------------------
+// Assignment Tokens
+//---------------------------------------------------------------------
+const PlusEquals = createToken({ name: "PlusEquals", pattern: /\+\=/ , categories:AssignmentGroup})
+const MinusEquals = createToken({ name: "MinusEquals", pattern: /-\=/, categories:AssignmentGroup })
+const MultiEquals = createToken({ name: "MultiEquals", pattern: /\*\=/, categories:AssignmentGroup })
+const DivEquals = createToken({ name: "DivEquals", pattern: /\/\=/ , categories:AssignmentGroup})
+const Assignment = createToken({ name: "Assignment", pattern: /:=/, categories:AssignmentGroup })
+
+
+const Plus = createToken({ name: "Plus", pattern: /\+/ , categories: AdditionOperator})
+const Minus = createToken({ name: "Minus", pattern: /-/, categories: MultiplicationOperator })
+const Mult = createToken({ name: "Mult", pattern: /\*/, categories: MultiplicationOperator })
+const Div = createToken({ name: "Div", pattern: /\//, categories: MultiplicationOperator })
+const Pow = createToken({ name: "Pow", pattern: /\*\*/, categories: MultiplicationOperator })
+const Pow2 = createToken({ name: "Pow", pattern: /\^/, categories: MultiplicationOperator })
+const Perc = createToken({ name: "Perc", pattern: /%/, categories: MultiplicationOperator })
 const At = createToken({ name: "At", pattern: /@/ })
 const Ampersand = createToken({ name: "Ampersand", pattern: /&/ })
 //---------------------------------------------------------------------
@@ -94,14 +114,14 @@ const StaticToken = createToken({ name: "StaticToken", pattern: /static/i })
 const selfToken = createToken({ name: "selfToken", pattern: /self/i })
 const WhileToken = createToken({ name: "WhileToken", pattern: /while/i })
 
-const True = createToken({ name: "True", pattern: /\.t\./i })
-const False = createToken({ name: "False", pattern: /\.f\./i })
-const Not = createToken({ name: "Not", pattern: /\.not\./i })
-const And = createToken({ name: "And", pattern: /\.and\./i })
-const Or = createToken({ name: "Or", pattern: /\.or\./i })
+
+const Not = createToken({ name: "Not", pattern: /\.not\./i ,categories: LogicGroup})
+const And = createToken({ name: "And", pattern: /\.and\./i ,categories: LogicGroup})
+const Or = createToken({ name: "Or", pattern: /\.or\./i ,categories: LogicGroup })
 const Dot = createToken({ name: "Dot", pattern: /\./ })
 const Not2 = createToken({ name: "Not", pattern: /\!/ })
-const Nil = createToken({ name: "Nil", pattern: /nil/i })
+
+const SemiColon = createToken({ name: "SemiColon", pattern: /;/ })
 const LCurly = createToken({ name: "LCurly", pattern: /{/ })
 const RCurly = createToken({ name: "RCurly", pattern: /}/ })
 const LParam = createToken({ name: "LParam", pattern: /\(/ })
@@ -110,7 +130,7 @@ const LSquare = createToken({ name: "LSquare", pattern: /\[/ })
 const RSquare = createToken({ name: "RSquare", pattern: /]/ })
 const Pipe = createToken({ name: "Pipe", pattern: /\|/ })
 const Comma = createToken({ name: "Comma", pattern: /,/ })
-const Assignment = createToken({ name: "Assignment", pattern: /:=/ })
+
 const Colon = createToken({ name: "Colon", pattern: /:/ })
 
 
@@ -145,28 +165,53 @@ const Comment = createToken({
     group: 'comments'
     
   });
+//---------------------------------------------------------------------
+// Literal
+//---------------------------------------------------------------------
   
 const StringLiteral = createToken({
     name: "StringLiteral",
-    pattern: /"(:?[^\\"]|\\(:?[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/
+    pattern: /"(:?[^\\"]|\\(:?[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/,
+    categories: LiteralGroup
 })
 const StringLiteralSimple = createToken({
     name: "StringLiteralSimple",
-    pattern: /'(:?[^\\']|\\(:?[bfnrtv'\\/]|u[0-9a-fA-F]{4}))*'/
+    pattern: /'(:?[^\\']|\\(:?[bfnrtv'\\/]|u[0-9a-fA-F]{4}))*'/,
+    categories: LiteralGroup
 })
 const NumberLiteral = createToken({
     name: "NumberLiteral",
-    pattern: /-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?/
+    pattern: /-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?/,
+    categories: LiteralGroup
 })
+const True = createToken({ 
+    name: "True",
+     pattern: /\.t\./i,
+     categories: LiteralGroup
+     })
+const False = createToken({ 
+    name: "False", 
+    pattern: /\.f\./i,
+    categories: LiteralGroup
+ })
+const Nil = createToken({
+     name: "Nil", 
+     pattern: /nil/i,
+     categories: LiteralGroup
+     })
+
+
+
 const CRLF = createToken({
     name: "CRLF",
     pattern: /[\r]?[\n]/    
 })
-const CRLF_ESCAPED = createToken({
+/*const CRLF_ESCAPED = createToken({
     name: "CRLF_ESCAPED",
     pattern: /;[\r]?[\n]/    
 })
-
+  CRLF_ESCAPED,
+*/
 const WhiteSpace = createToken({
     name: "WhiteSpace",
     pattern: /[ \t]+/,
@@ -174,8 +219,7 @@ const WhiteSpace = createToken({
 })
 const allTokens = [
     WhiteSpace,
-    CRLF,
-    CRLF_ESCAPED,
+    CRLF,  
     Comment,
     LineComment,
     As,
@@ -214,6 +258,7 @@ const allTokens = [
     LParam,
     RParam,
     Comma,
+    SemiColon,
     Pipe,
     Assignment,
     Colon,
@@ -271,23 +316,24 @@ const allTokens = [
     WsClientToken,
     EndClientToken,
     EndToken,
+    AdditionOperator,
+    MultiplicationOperator,
+    LiteralGroup,
+    AssignmentGroup,
+    LogicGroup,
+    RelationalGroup,
     Identifier
 ]
 const AdvplLexer = new Lexer(allTokens, {  ensureOptimizations : true  })
+
+
+//---------------------------------------------------------------------
+// Parser
+//---------------------------------------------------------------------
 class AdvplParser extends Parser {
     constructor(input){
         super(input,allTokens, { outputCst : true,  recoveryEnabled: true });
-        this.performSelfAnalysis();
-     /*   this.RULE("program", () => {
-            this.MANY(() => {
-                this.SUBRULE($.statement)
-            })
-        });
-        $.RULE("statement", () => {
-            $.MANY(() => {
-                $.SUBRULE($.statement)
-            })
-        })*/
+        this.performSelfAnalysis();     
     }
     public program = this.RULE("program", () => {
         this.MANY(() => {
@@ -296,8 +342,9 @@ class AdvplParser extends Parser {
     });
     public statement = this.RULE("statement", () => {
         this.OR([
-            { ALT: () => this.SUBRULE(this.functionStatement)}
-
+            { ALT: () => this.SUBRULE(this.crlfStatement)},
+            { ALT: () => this.SUBRULE(this.functionStatement)},
+            { ALT: () => this.SUBRULE(this.expression)}
         ]);
     });
     public functionStatement = this.RULE("functionStatement", () => {
@@ -308,14 +355,18 @@ class AdvplParser extends Parser {
         this.SUBRULE(this.identifierStatement);
         this.CONSUME(LParam);
         this.OPTION1( () => {
-            this.SUBRULE(this.formalParameters);
+            this.SUBRULE1(this.formalParameters);
         });        
         this.CONSUME(RParam);
-        this.CONSUME(CRLF);
+        this.SUBRULE2(this.crlfStatement);
+        this.SUBRULE3(this.block);
         this.CONSUME(ReturnToken);
     })
     public identifierStatement= this.RULE("identifierStatement", () => {
-        this.CONSUME(Identifier);
+        this.OR([
+            {ALT:() => this.CONSUME(selfToken)},
+            {ALT:() => this.CONSUME(Identifier)},
+        ]);    
     })
     public modifiersFunction = this.RULE("modifiersFunction", () => {
         this.OR([
@@ -333,9 +384,91 @@ class AdvplParser extends Parser {
             DEF: () => {
                 this.SUBRULE(this.identifierStatement);
             }  
-        }
-    )
+        })
     });
+    /**
+     * block
+     */
+    public block = this.RULE("block", () => {
+        this.AT_LEAST_ONE( ()  => {
+            this.SUBRULE(this.statement);
+            this.SUBRULE1(this.crlfStatement)
+        });
+    });
+    public crlfStatement= this.RULE("crlfStatement", () => {
+        
+        this.OR([
+            {ALT:() => {
+                this.AT_LEAST_ONE( ()  => {
+                    this.CONSUME(CRLF);
+                });
+            } },
+            {ALT:() => this.CONSUME(SemiColon)}
+            
+        ]);
+    });
+    /**
+     * Expressions
+     */
+    public expression = this.RULE("expression", () => {
+        this.SUBRULE(this.conditionalExpression);
+        this.MANY( () => {
+            this.CONSUME(AssignmentGroup);
+            this.SUBRULE2(this.expression);
+        });
+    });
+
+    
+    public conditionalExpression = this.RULE("conditionalExpression", () => {
+        this.SUBRULE(this.relationalExpression);
+        this.MANY( () => {
+            this.CONSUME(LogicGroup);
+            this.SUBRULE2(this.relationalExpression);
+        });
+    });
+
+    public relationalExpression = this.RULE("relationalExpression", () => {
+        this.SUBRULE(this.additionExpression);
+        this.MANY( () => {
+            this.CONSUME(RelationalGroup);
+            this.SUBRULE2(this.additionExpression);
+        });
+    });
+    
+    
+
+    public additionExpression = this.RULE("additionExpression", () => {
+        this.SUBRULE(this.multiplicationExpression);
+        this.MANY( () => {
+            this.CONSUME(AdditionOperator);
+            this.SUBRULE2(this.multiplicationExpression);
+        });
+    });
+    public multiplicationExpression = this.RULE("multiplicationExpression", () => {
+        this.SUBRULE(this.atomicExpression);
+        this.MANY( () => {
+            this.CONSUME(MultiplicationOperator);
+            this.SUBRULE2(this.atomicExpression);
+        });
+    });
+
+    public atomicExpression = this.RULE("atomicExpression", () => {
+        this.OR([
+            {ALT:() => this.SUBRULE(this.parenthesisExpression)},
+            {ALT:() => this.CONSUME(LiteralGroup)},
+            {ALT:() => this.SUBRULE(this.identifierStatement)},
+            
+        ]);
+    });
+    public parenthesisExpression = this.RULE("parenthesisExpression", () => {
+        this.CONSUME(LParam);
+        this.SUBRULE(this.expression);
+        this.CONSUME(RParam);        
+    });
+    
+    
+    
+
     
 }
 
