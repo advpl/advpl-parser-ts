@@ -2,6 +2,7 @@ import {
     createToken,
     Lexer,
     Parser,
+    EOF,
     IToken,
     ILexingError,
     IRecognitionException
@@ -344,7 +345,13 @@ class AdvplParser extends Parser {
         this.OR([
             { ALT: () => this.SUBRULE(this.crlfStatement)},
             { ALT: () => this.SUBRULE(this.functionStatement)},
-            { ALT: () => this.SUBRULE(this.expression)}
+            { ALT: () => this.SUBRULE(this.ifStatement)},
+            { ALT: () => this.SUBRULE(this.forStatement)},
+            { ALT: () => this.SUBRULE(this.doStatement)},
+            { ALT: () => this.SUBRULE(this.expression)},
+            { ALT: () => this.SUBRULE(this.returnStatement)}
+
+            
         ]);
     });
     public functionStatement = this.RULE("functionStatement", () => {
@@ -359,9 +366,30 @@ class AdvplParser extends Parser {
         });        
         this.CONSUME(RParam);
         this.SUBRULE2(this.crlfStatement);
-        this.SUBRULE3(this.block);
-        this.CONSUME(ReturnToken);
+        this.OPTION2( () => {
+            this.SUBRULE3(this.initFuncOrMethod);
+        })
+        this.SUBRULE4(this.block);
+        
     })
+    public initFuncOrMethod= this.RULE("initFuncOrMethod", () => {
+        this.CONSUME(LocalToken);
+        this.SUBRULE(this.localVariableDeclarationStatement);
+        this.SUBRULE1(this.crlfStatement);
+    });
+    public localVariableDeclarationStatement= this.RULE("localVariableDeclarationStatement", () => {        
+        this.AT_LEAST_ONE_SEP({
+            SEP: Comma,
+            DEF: () => {
+                this.SUBRULE(this.expression);
+                this.OPTION( () => {
+                    this.CONSUME(As);
+                    this.SUBRULE1(this.identifierStatement);
+                })
+            }  
+        });
+    });
+    
     public identifierStatement= this.RULE("identifierStatement", () => {
         this.OR([
             {ALT:() => this.CONSUME(selfToken)},
@@ -378,6 +406,7 @@ class AdvplParser extends Parser {
             {ALT:() => this.CONSUME(TemplateToken)}            
         ])
     })
+    
     public formalParameters = this.RULE("formalParameters", () => {
         this.MANY_SEP({
             SEP: Comma,
@@ -390,9 +419,26 @@ class AdvplParser extends Parser {
      * block
      */
     public block = this.RULE("block", () => {
-        this.AT_LEAST_ONE( ()  => {
-            this.SUBRULE(this.statement);
-            this.SUBRULE1(this.crlfStatement)
+        this.AT_LEAST_ONE( ()  => {            
+            this.OR([
+                {
+                    ALT:() => {
+                        this.SUBRULE(this.statement);
+                        this.OR1([
+                            {ALT:() => this.SUBRULE1(this.crlfStatement)},
+                            {ALT:() => this.CONSUME(EOF)}                            
+                        ])
+                        } 
+                },
+                {
+                    ALT:() => {
+                    this.SUBRULE2(this.crlfStatement)
+                } 
+            }
+            ]);
+
+            
+            
         });
     });
     public crlfStatement= this.RULE("crlfStatement", () => {
@@ -407,6 +453,117 @@ class AdvplParser extends Parser {
             
         ]);
     });
+
+    public returnStatement = this.RULE("returnStatement", () => {
+        this.CONSUME(ReturnToken);
+        this.OPTION1( () => {
+            this.SUBRULE(this.expression);
+        });        
+    });
+
+    public ifStatement = this.RULE("ifStatement", () => {
+        this.CONSUME(IfToken);
+        this.SUBRULE(this.expression);
+        this.SUBRULE2(this.crlfStatement);
+
+        this.OPTION( () => {
+            this.SUBRULE3(this.block);
+        });
+
+        this.MANY(() => {
+            this.SUBRULE4(this.elseifStatement);
+        });
+        this.OPTION1( () => {
+            this.SUBRULE5(this.elseStatement );
+        });
+        this.CONSUME(EndifToken);
+    });
+    public elseifStatement = this.RULE("elseifStatement", () => {
+        this.CONSUME(ElseIfToken);
+        this.SUBRULE(this.expression);
+        this.SUBRULE1(this.crlfStatement)
+        this.OPTION( () => {
+            this.SUBRULE2(this.block);
+        });
+    });
+
+    public elseStatement = this.RULE("elseStatement", () => {
+        this.CONSUME(ElseIfToken);        
+        this.SUBRULE(this.crlfStatement)
+        this.OPTION( () => {
+            this.SUBRULE1(this.block);
+        });
+    });
+    public forStatement = this.RULE("forStatement", () => {
+        this.CONSUME(ForToken);
+        this.SUBRULE(this.forInit);
+        this.CONSUME(ToToken);
+        this.SUBRULE1(this.expression);
+        this.OPTION( () => {
+            this.CONSUME(StepToken);
+            this.SUBRULE2(this.expression);
+        });
+        this.SUBRULE3(this.crlfStatement)
+        this.OPTION1( () => {           
+            this.SUBRULE4(this.block);
+        });
+        this.CONSUME(NextToken);
+        this.OPTION2( () => {           
+            this.SUBRULE5(this.expression);
+        });
+
+    });
+    public forInit = this.RULE("forInit", () => {
+        this.SUBRULE(this.identifierStatement);
+        this.CONSUME(Assignment);
+        this.SUBRULE1(this.expression);        
+    });
+    public doStatement = this.RULE("doStatement", () => {
+        this.CONSUME(DoToken);        
+        this.OR([
+            { ALT: () => this.SUBRULE(this.whileStatement)},
+            { ALT: () => this.SUBRULE(this.docaseStatement)}
+        ]);        
+        this.OR1([
+            { ALT: () => this.CONSUME(EndToken)},
+            { ALT: () => this.CONSUME(EndDoToken)}
+        ]);
+        this.OPTION( () => {           
+            this.SUBRULE(this.crlfStatement);
+        });        
+        
+    });
+    public whileStatement = this.RULE("whileStatement", () => {
+        this.CONSUME(WhileToken);
+        this.SUBRULE(this.expression);
+        this.SUBRULE1(this.crlfStatement);
+        this.OPTION( () => {           
+            this.SUBRULE2(this.block);
+        });
+    });
+    public docaseStatement = this.RULE("docaseStatement", () => {
+        this.CONSUME(CaseToken);
+        this.SUBRULE(this.crlfStatement);
+        this.AT_LEAST_ONE( ()  => {
+            this.CONSUME1(CaseToken);
+            this.SUBRULE1(this.expression);
+            this.SUBRULE2(this.crlfStatement);
+            this.OPTION( () => {           
+                this.SUBRULE3(this.block);
+            });
+        });
+        this.OPTION1( () => {       
+            this.CONSUME(OtherwiseToken);    
+            this.SUBRULE4(this.block);
+        });
+        /*
+        this.SUBRULE(this.expression);
+        
+        this.OPTION( () => {           
+            this.SUBRULE2(this.block);
+        });*/
+    });
+    
     /**
      * Expressions
      */

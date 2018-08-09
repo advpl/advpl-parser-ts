@@ -19,7 +19,7 @@ import { parseAdvpl } from "./parser/advplParser";
                 throw err;
             }
     const lexAndParseResult = parseAdvpl(data.toString("utf8"));*/
-    const inputText = 'main function teste(pra)\n 10 + 32\nreturn'
+    const inputText = 'main function teste(pra)\nLocal nx := 1\nreturn'
     const lexAndParseResult = parseAdvpl(inputText);
     console.log(lexAndParseResult);
         //});
