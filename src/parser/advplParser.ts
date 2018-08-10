@@ -613,17 +613,77 @@ class AdvplParser extends Parser {
         this.OR([
             {ALT:() => this.SUBRULE(this.parenthesisExpression)},
             {ALT:() => this.CONSUME(LiteralGroup)},
-            {ALT:() => this.SUBRULE(this.identifierStatement)},
-            
+            {ALT:() => { 
+                this.SUBRULE(this.identifierStatement);
+                this.OPTION( () => {
+                    this.SUBRULE1(this.arguments); //#FunctionCall
+                });        
+                this.OPTION1( () => {
+                    this.SUBRULE1(this.arrayAccess);//#arrayAccess
+                });        
+            }
+            },
+            {ALT:() => this.SUBRULE(this.arrayOrBlockInitializer)}
         ]);
     });
+    public arguments = this.RULE("arguments", () => {
+        this.CONSUME(LParam);
+        this.SUBRULE(this.expressionList);
+        this.CONSUME(RParam);        
+    }); 
     public parenthesisExpression = this.RULE("parenthesisExpression", () => {
         this.CONSUME(LParam);
         this.SUBRULE(this.expression);
         this.CONSUME(RParam);        
     });
+    public expressionList = this.RULE("expressionList", () => {
+        this.MANY_SEP({
+            SEP: Comma,
+            DEF: () => {
+                this.SUBRULE(this.optionalExpression);
+            }  
+        })
+        
+    });
     
+    public optionalExpression = this.RULE("optionalExpression", () => {
+        this.OPTION( () => {
+            this.SUBRULE(this.expression);
+        });        
+    });
+    public arrayAccess = this.RULE("arrayAccess", () => {
+        this.CONSUME(LSquare);
+        this.SUBRULE(this.expressionList);
+        this.CONSUME(RSquare);        
+    });
+    public arrayOrBlockInitializer = this.RULE("arrayOrBlockInitializer", () => {
+        this.CONSUME(LCurly);
+        this.OR([
+            {ALT:() => {
+                this.CONSUME(Pipe);
+                this.OPTION( () => {
+                    this.SUBRULE(this.blockParams);
+                });
+                this.CONSUME1(Pipe);
+                this.SUBRULE1(this.expressionList);
+                }
+            },
+            {ALT:() => this.SUBRULE2(this.expressionList)}
+        ]);
+        this.CONSUME(RCurly);
+        /*this.SUBRULE(this.expressionList);
+        this.CONSUME(LSquare);*/
+    });
     
+    public blockParams = this.RULE("blockParams", () => {
+        this.MANY_SEP({
+            SEP: Comma,
+            DEF: () => {
+                this.SUBRULE(this.identifierStatement);
+            }  
+        })
+        
+    });
     
 
     
@@ -639,15 +699,20 @@ export function parseAdvpl(text) {
     parser.input = lexResult.tokens;
     const serializedGrammar = parser.getSerializedGastProductions()
     const ret = parser.program();
+    
     console.log(ret);
     genHTML(serializedGrammar);
     // setting a new input will RESET the parser instance's state.
     //parser.input = lexResult.tokens
     console.log(lexResult);
+    return ret;
 }
 export function gettokenVocabulary(){
     let tokenVocabulary = [];
     allTokens.forEach(tokenType => {
     tokenVocabulary[tokenType.name] = tokenType })
 return tokenVocabulary;
+}
+export function getBaseCstVisitorConstructorWithDefaults(){
+    return parser.getBaseCstVisitorConstructorWithDefaults();
 }
