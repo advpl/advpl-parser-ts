@@ -63,17 +63,18 @@ const Ampersand = createToken({ name: "Ampersand", pattern: /&/ })
 /*
 
 */
+const Identifier = createToken({ name: "Identifier", pattern: /[a-zA-Z_]\w*/ });
 const MainToken = createToken({ name: "MainToken", pattern: /main/i })
 const UserToken = createToken({ name: "UserToken", pattern: /user/i })
 const ProjectToken = createToken({ name: "ProjectToken", pattern: /project/i })
 const WebToken = createToken({ name: "WebToken", pattern: /web/i })
 const TemplateToken = createToken({ name: "TemplateToken", pattern: /template/i })
 
-const ClassToken = createToken({ name: "Class", pattern: /class/i })
-const DataToken = createToken({ name: "Data", pattern: /data/i })
-const FromToken = createToken({ name: "From", pattern: /from/i })
-const MethodToken = createToken({ name: "Method", pattern: /method/i })
-const EndClassToken = createToken({ name: "EndClass", pattern: /endclass/i })
+const ClassToken = createToken({ name: "ClassToken", pattern: /class/i, longer_alt: Identifier });
+const DataToken = createToken({ name: "DataToken", pattern: /data/i , longer_alt: Identifier});
+const FromToken = createToken({ name: "FromToken", pattern: /from/i , longer_alt: Identifier});
+const MethodToken = createToken({ name: "MethodToken", pattern: /method/i , longer_alt: Identifier})
+const EndClassToken = createToken({ name: "EndClassToken", pattern: /endclass/i , longer_alt: Identifier})
 
 const WsServiceToken = createToken({ name: "WsService", pattern: /wsservice/i })
 const WsMethodToken = createToken({ name: "WsMethod", pattern: /wsmethod/i })
@@ -90,30 +91,31 @@ const EndClientToken = createToken({ name: "EndClient", pattern: /endclient/i })
 
 
 
-const FunctionToken = createToken({ name: "FunctionToken", pattern: /function/i })
-const CaseToken = createToken({ name: "CaseToken", pattern: /case/i })
-const DoToken = createToken({ name: "DoToken", pattern: /do/i })
-const ToToken = createToken({ name: "ToToken", pattern: /to/i })
-const ForToken = createToken({ name: "ForToken", pattern: /for/i })
-const LocalToken = createToken({ name: "LocalToken", pattern: /local/i })
-const LoopToken = createToken({ name: "LoopToken", pattern: /loop/i })
-const NextToken = createToken({ name: "NextToken", pattern: /next/i })
-const IfToken = createToken({ name: "IfToken", pattern: /if/i })
-const ElseIfToken = createToken({ name: "ElseIfToken", pattern: /elseif/i })
-const ElseToken = createToken({ name: "ElseToken", pattern: /else/i })
-const ExitToken = createToken({ name: "ExitToken", pattern: /exit/i })
-const EndifToken = createToken({ name: "EndifToken", pattern: /endif/i })
-const EndCaseToken = createToken({ name: "EndCaseToken", pattern: /endcase/i })
-const EndDoToken = createToken({ name: "EndDoToken", pattern: /enddo/i })
-const EndToken = createToken({ name: "EndToken", pattern: /end/i })
-const StepToken = createToken({ name: "StepToken", pattern: /step/i })
-const OtherwiseToken = createToken({ name: "OtherwiseToken", pattern: /otherwise/i })
-const PublicToken = createToken({ name: "PublicToken", pattern: /public/i })
-const PrivateToken = createToken({ name: "PrivateToken", pattern: /private/i })
-const ReturnToken = createToken({ name: "ReturnToken", pattern: /return/i })
-const StaticToken = createToken({ name: "StaticToken", pattern: /static/i })
-const selfToken = createToken({ name: "selfToken", pattern: /self/i })
-const WhileToken = createToken({ name: "WhileToken", pattern: /while/i })
+const FunctionToken = createToken({ name: "FunctionToken", pattern: /function/i , longer_alt: Identifier})
+const CaseToken = createToken({ name: "CaseToken", pattern: /case/i , longer_alt: Identifier })
+const DoToken = createToken({ name: "DoToken", pattern: /do/i , longer_alt: Identifier})
+const ToToken = createToken({ name: "ToToken", pattern: /to/i , longer_alt: Identifier})
+const ForToken = createToken({ name: "ForToken", pattern: /for/i , longer_alt: Identifier})
+const LocalToken = createToken({ name: "LocalToken", pattern: /local/i , longer_alt: Identifier })
+const LoopToken = createToken({ name: "LoopToken", pattern: /loop/i , longer_alt: Identifier})
+const NextToken = createToken({ name: "NextToken", pattern: /next/i , longer_alt: Identifier})
+const IfToken = createToken({ name: "IfToken", pattern: /if/i , longer_alt: Identifier})
+const ElseIfToken = createToken({ name: "ElseIfToken", pattern: /elseif/i, longer_alt: Identifier })
+const ElseToken = createToken({ name: "ElseToken", pattern: /else/i, longer_alt: Identifier })
+const ExitToken = createToken({ name: "ExitToken", pattern: /exit/i, longer_alt: Identifier })
+const EndifToken = createToken({ name: "EndifToken", pattern: /endif/i, longer_alt: Identifier })
+const EndCaseToken = createToken({ name: "EndCaseToken", pattern: /endcase/i , longer_alt: Identifier})
+const EndDoToken = createToken({ name: "EndDoToken", pattern: /enddo/i , longer_alt: Identifier})
+const EndToken = createToken({ name: "EndToken", pattern: /end/i , longer_alt: Identifier})
+const StepToken = createToken({ name: "StepToken", pattern: /step/i , longer_alt: Identifier})
+const OtherwiseToken = createToken({ name: "OtherwiseToken", pattern: /otherwise/i , longer_alt: Identifier})
+const PublicToken = createToken({ name: "PublicToken", pattern: /public/i, longer_alt: Identifier })
+const PrivateToken = createToken({ name: "PrivateToken", pattern: /private/i, longer_alt: Identifier })
+const ReturnToken = createToken({ name: "ReturnToken", pattern: /return/i, longer_alt: Identifier })
+const StaticToken = createToken({ name: "StaticToken", pattern: /static/i, longer_alt: Identifier })
+const selfToken = createToken({ name: "selfToken", pattern: /self/i, longer_alt: Identifier })
+const superToken = createToken({ name: "superToken", pattern: /_Super/, longer_alt: Identifier })
+const WhileToken = createToken({ name: "WhileToken", pattern: /while/i, longer_alt: Identifier })
 
 
 const Not = createToken({ name: "Not", pattern: /\.not\./i ,categories: LogicGroup})
@@ -133,21 +135,25 @@ const Pipe = createToken({ name: "Pipe", pattern: /\|/ })
 const Comma = createToken({ name: "Comma", pattern: /,/ })
 
 const Colon = createToken({ name: "Colon", pattern: /:/ })
+const ColonColon = createToken({ name: "ColonColon", pattern: /::/ })
+
+//---------------------------------------------------------------------
+// Chs ids
+//---------------------------------------------------------------------
+//const ParamTypeToken = createToken({ name: "ParamTypeToken", pattern: /paramtype/i , longer_alt: Identifier})
+
+
+const IncludeToken = createToken({ name: "IncludeToken", pattern: /#include/i });
+const DefineToken = createToken({ name: "DefineToken", pattern: /#define/i });
+const IfDefToken = createToken({ name: "IfDefToken", pattern: /#ifdef/i });
+const EndifDefToken = createToken({ name: "EndifDefToken", pattern: /#endif/i });
 
 
 
-const As = createToken({ name: "As", pattern: /as/i })
-const Of = createToken({ name: "Of", pattern: /of/i })
 
+const As = createToken({ name: "As", pattern: /as/i , longer_alt: Identifier});
+const Of = createToken({ name: "Of", pattern: /of/i , longer_alt: Identifier});
 
-const IncludeToken = createToken({ name: "Include", pattern: /#include/i })
-const DefineToken = createToken({ name: "Define", pattern: /#define/i })
-const IfDefToken = createToken({ name: "IfDef", pattern: /#ifdef/i })
-const EndifDefToken = createToken({ name: "EndIfDef", pattern: /#endif/i })
-
-
-
-const Identifier = createToken({ name: "Identifier", pattern: /[a-zA-Z_]\w*/ })
 const Comment = createToken({
     name: 'Comment',
     pattern: /\/\*[^]*?\*\//,
@@ -262,7 +268,8 @@ const allTokens = [
     SemiColon,
     Pipe,
     Assignment,
-    Colon,
+    ColonColon,
+    Colon,    
     True,
     False,
     Not,
@@ -293,6 +300,7 @@ const allTokens = [
     ReturnToken,
     StaticToken,
     selfToken,
+    superToken,
     WhileToken,
     IncludeToken,
     DefineToken,
@@ -322,7 +330,7 @@ const allTokens = [
     LiteralGroup,
     AssignmentGroup,
     LogicGroup,
-    RelationalGroup,
+    RelationalGroup,    
     Identifier
 ]
 const AdvplLexer = new Lexer(allTokens, {  ensureOptimizations : true  })
@@ -338,23 +346,62 @@ class AdvplParser extends Parser {
     }
     public program = this.RULE("program", () => {
         this.MANY(() => {
-            this.SUBRULE(this.statement)
+            this.OR([
+                { ALT: () => this.SUBRULE(this.preprocessorDeclaration)},
+                { ALT: () => this.SUBRULE(this.methodBody)},                
+                { ALT: () => this.SUBRULE(this.functionDeclaration)},
+                { ALT: () => this.SUBRULE(this.classDeclaration)},
+                { ALT: () => this.SUBRULE(this.staticVariable)},
+                { ALT: () => this.SUBRULE(this.crlfStatement)}
+            ]);
         })
     });
+    
+    public preprocessorDeclaration= this.RULE("preprocessorDeclaration", () => {
+        this.OR([
+            { ALT: () => this.SUBRULE(this.includeDeclaration)},
+            { ALT: () => this.SUBRULE(this.defineDeclaration)}            
+        ]);
+    });
+
+    public includeDeclaration= this.RULE("includeDeclaration", () => {
+        this.CONSUME(IncludeToken);        
+        this.OR([
+            {ALT:() => this.CONSUME(StringLiteral)},
+            {ALT:() => this.CONSUME(StringLiteralSimple)}
+        ]);        
+    });
+    public defineDeclaration= this.RULE("defineDeclaration", () => {
+        this.CONSUME(DefineToken);
+        this.SUBRULE(this.identifierStatement);
+        this.SUBRULE(this.expression);        
+    });
+      
+    public staticVariable= this.RULE("staticVariable", () => {
+        this.CONSUME(StaticToken);
+        this.AT_LEAST_ONE_SEP({
+            SEP: Comma,
+            DEF: () => {
+                this.SUBRULE(this.expression);
+                this.OPTION( () => {
+                    this.CONSUME(As);
+                    this.SUBRULE1(this.identifierStatement);
+                })
+            }  
+        });
+    });
+
     public statement = this.RULE("statement", () => {
         this.OR([
-            { ALT: () => this.SUBRULE(this.crlfStatement)},
-            { ALT: () => this.SUBRULE(this.functionStatement)},
+            { ALT: () => this.SUBRULE(this.crlfStatement)},            
             { ALT: () => this.SUBRULE(this.ifStatement)},
             { ALT: () => this.SUBRULE(this.forStatement)},
             { ALT: () => this.SUBRULE(this.doStatement)},
             { ALT: () => this.SUBRULE(this.expression)},
             { ALT: () => this.SUBRULE(this.returnStatement)}
-
-            
         ]);
     });
-    public functionStatement = this.RULE("functionStatement", () => {
+    public functionDeclaration = this.RULE("functionDeclaration", () => {
         this.OPTION( () => {
             this.SUBRULE(this.modifiersFunction);
         })
@@ -369,15 +416,16 @@ class AdvplParser extends Parser {
         this.OPTION2( () => {
             this.SUBRULE3(this.initFuncOrMethod);
         })
-        this.SUBRULE4(this.block);
-        
-    })
-    public initFuncOrMethod= this.RULE("initFuncOrMethod", () => {
-        this.CONSUME(LocalToken);
-        this.SUBRULE(this.localVariableDeclarationStatement);
-        this.SUBRULE1(this.crlfStatement);
+        this.SUBRULE4(this.block);        
     });
-    public localVariableDeclarationStatement= this.RULE("localVariableDeclarationStatement", () => {        
+    public initFuncOrMethod= this.RULE("initFuncOrMethod", () => {
+        this.MANY(() => {
+            this.CONSUME(LocalToken);
+            this.SUBRULE(this.localVariableDeclarationStatement);
+            this.SUBRULE1(this.crlfStatement);
+        });
+    });
+    public localVariableDeclarationStatement= this.RULE("localVariableDeclarationStatement", () => {
         this.AT_LEAST_ONE_SEP({
             SEP: Comma,
             DEF: () => {
@@ -393,9 +441,17 @@ class AdvplParser extends Parser {
     public identifierStatement= this.RULE("identifierStatement", () => {
         this.OR([
             {ALT:() => this.CONSUME(selfToken)},
-            {ALT:() => this.CONSUME(Identifier)},
+            {ALT:() => this.CONSUME(superToken)},            
+            {ALT:() => {
+                this.CONSUME(ColonColon);
+                this.CONSUME1(Identifier);
+                }
+            },
+            {ALT:() => this.CONSUME(Identifier)}
+            
+            
         ]);    
-    })
+    });
     public modifiersFunction = this.RULE("modifiersFunction", () => {
         this.OR([
             {ALT:() => this.CONSUME(UserToken)},
@@ -460,12 +516,22 @@ class AdvplParser extends Parser {
             this.SUBRULE(this.expression);
         });        
     });
+/*
+  { ALT: () => {
+                this.CONSUME(Comma);
 
+                this.OPTION( () => {
+                    this.SUBRULE1(this.expression);
+                });
+                this.CONSUME1(Comma);
+                this.OPTION1( () => {
+                    this.SUBRULE2(this.expression);
+                });
+            }},*/
     public ifStatement = this.RULE("ifStatement", () => {
         this.CONSUME(IfToken);
-        this.SUBRULE(this.expression);
+        this.SUBRULE(this.expression);        
         this.SUBRULE2(this.crlfStatement);
-
         this.OPTION( () => {
             this.SUBRULE3(this.block);
         });
@@ -563,7 +629,76 @@ class AdvplParser extends Parser {
             this.SUBRULE2(this.block);
         });*/
     });
-    
+
+    //-----------------------------------------------------------
+    // Class
+    //-----------------------------------------------------------
+    public classDeclaration = this.RULE("classDeclaration", () => {
+        this.CONSUME(ClassToken);
+        this.SUBRULE(this.identifierStatement);
+
+        this.OPTION( () => {
+            this.CONSUME(FromToken);
+            this.SUBRULE1(this.identifierStatement);
+        });
+        this.SUBRULE2(this.crlfStatement);
+        this.MANY(() => {
+            this.OR([
+                { ALT: () => this.SUBRULE3(this.dataDefinition)},
+                { ALT: () => this.SUBRULE4(this.methodDefinition)}
+            ]);        
+
+        });
+        this.CONSUME(EndClassToken);
+        //this.SUBRULE5(this.crlfStatement);
+    });
+
+    public dataDefinition = this.RULE("dataDefinition", () => {
+        
+            this.CONSUME(DataToken);
+            this.SUBRULE(this.identifierStatement);
+            this.SUBRULE1(this.crlfStatement);
+        
+    });
+    public methodDefinition = this.RULE("methodDefinition", () => {        
+            this.CONSUME(MethodToken);
+            this.SUBRULE(this.identifierStatement);            
+            this.SUBRULE1(this.arguments); //#FunctionCall            
+            this.SUBRULE2(this.crlfStatement);        
+    });    
+    public methodBody = this.RULE("methodBody", () => {
+        this.CONSUME(MethodToken);        
+        this.SUBRULE(this.identifierStatement);        
+        this.CONSUME(LParam);
+        this.OPTION1( () => {
+            this.SUBRULE1(this.formalParameters);
+        });        
+        this.CONSUME(RParam);
+        this.CONSUME(ClassToken);
+        this.SUBRULE2(this.identifierStatement);
+        this.SUBRULE3(this.crlfStatement);
+        this.OPTION2( () => {
+            this.SUBRULE4(this.initFuncOrMethod);
+        })
+        this.SUBRULE5(this.block);        
+    });
+
+    /*classDeclaration:
+    CLASS identifier fromClass? crlf
+    dataDefinition*
+    methodDefinition*
+    (ENDCLASS|(END CLASS) )  crlf
+    ;
+    fromClass:
+    FROM identifier;
+    dataDefinition:
+    DATA identifier crlf;
+    methodDefinition:
+    METHOD identifier arguments 'CONSTRUCTOR'? crlf;
+    methodBody:
+    METHOD identifier (LPAREN formalParameters? RPAREN)? CLASS identifier crlf
+    initFuncOrMethod?   block 	
+    */
     /**
      * Expressions
      */
@@ -611,7 +746,7 @@ class AdvplParser extends Parser {
 
     public atomicExpression = this.RULE("atomicExpression", () => {
         this.OR([
-            {ALT:() => this.SUBRULE(this.parenthesisExpression)},
+            {ALT:() => this.SUBRULE(this.parenthesisExpression)},            
             {ALT:() => this.CONSUME(LiteralGroup)},
             {ALT:() => { 
                 this.SUBRULE(this.identifierStatement);
@@ -620,12 +755,34 @@ class AdvplParser extends Parser {
                 });        
                 this.OPTION1( () => {
                     this.SUBRULE1(this.arrayAccess);//#arrayAccess
-                });        
+                });
+                this.OPTION2( () => {
+                    this.SUBRULE1(this.methodAccessLoop);//#methodAccessLoop
+                });
             }
             },
             {ALT:() => this.SUBRULE(this.arrayOrBlockInitializer)}
+            //{ALT:() => this.SUBRULE(this.xCommandsEmbedded)}
         ]);
     });
+
+    public methodAccessLoop = this.RULE("methodAccessLoop", () => {
+        this.MANY( () => {
+            this.CONSUME(Colon);
+            this.SUBRULE(this.identifierStatement);
+            this.OPTION( () => {
+                this.SUBRULE1(this.arguments); //#FunctionCall
+            });
+            this.OPTION1( () => {
+                this.SUBRULE1(this.arrayAccess);//#arrayAccess
+            });
+        });
+    }); 
+    /*
+methodAccessLoop:
+                    (':' (identifier) arguments? arrayAccess? )*/
+
+
     public arguments = this.RULE("arguments", () => {
         this.CONSUME(LParam);
         this.SUBRULE(this.expressionList);
@@ -633,7 +790,7 @@ class AdvplParser extends Parser {
     }); 
     public parenthesisExpression = this.RULE("parenthesisExpression", () => {
         this.CONSUME(LParam);
-        this.SUBRULE(this.expression);
+        this.SUBRULE(this.expressionList);
         this.CONSUME(RParam);        
     });
     public expressionList = this.RULE("expressionList", () => {
@@ -684,9 +841,21 @@ class AdvplParser extends Parser {
         })
         
     });
+    //-----------------------------------------------------------
+    // xCommands Embedded
+    //-----------------------------------------------------------
+ /*   public xCommandsEmbedded = this.RULE("xCommandsEmbedded", () => {
+        this.OR([
+            {ALT:() => this.SUBRULE(this.paramtypeRule)}
+        ]);
     
-
-    
+    });*/
+/*    public paramtypeRule = this.RULE("paramtypeRule", () => {
+        this.CONSUME(ParamTypeToken);
+        this.CONSUME(NumberLiteral);
+        //this.SUBRULE(this.identifierStatement);
+    });
+  */  
 }
 
 const parser = new AdvplParser([]);
