@@ -55,7 +55,7 @@ const Div = createToken({ name: "Div", pattern: /\//, categories: Multiplication
 const Pow = createToken({ name: "Pow", pattern: /\*\*/, categories: MultiplicationOperator })
 const Pow2 = createToken({ name: "Pow", pattern: /\^/, categories: MultiplicationOperator })
 const Perc = createToken({ name: "Perc", pattern: /%/, categories: MultiplicationOperator })
-const At = createToken({ name: "At", pattern: /@/ })
+const AtToken = createToken({ name: "AtToken", pattern: /@/ })
 const Ampersand = createToken({ name: "Ampersand", pattern: /&/ })
 //---------------------------------------------------------------------
 // Words reserved
@@ -250,7 +250,7 @@ const allTokens = [
     Pow,
     Pow2,
     Perc,
-    At,
+    AtToken,
     Ampersand,
     NumberLiteral,
     StringLiteral,
@@ -341,7 +341,7 @@ const AdvplLexer = new Lexer(allTokens, {  ensureOptimizations : true  })
 //---------------------------------------------------------------------
 class AdvplParser extends Parser {
     constructor(input){
-        super(input,allTokens, { outputCst : true,  recoveryEnabled: true });
+        super(input,allTokens, { outputCst : true,  recoveryEnabled: true } ); //,ignoredIssues : {identifierAtomic :{OR: true}}
         this.performSelfAnalysis();     
     }
     public program = this.RULE("program", () => {
@@ -399,6 +399,8 @@ class AdvplParser extends Parser {
             { ALT: () => this.SUBRULE(this.doStatement)},
             { ALT: () => this.SUBRULE(this.expression)},
             { ALT: () => this.SUBRULE(this.returnStatement)}
+            //{ ALT: () => this.SUBRULE(this.chStatement)},
+            
         ]);
     });
     public functionDeclaration = this.RULE("functionDeclaration", () => {
@@ -751,20 +753,34 @@ class AdvplParser extends Parser {
             {ALT:() => { 
                 this.SUBRULE(this.identifierStatement);
                 this.OPTION( () => {
-                    this.SUBRULE1(this.arguments); //#FunctionCall
+                    this.SUBRULE(this.identifierAtomic);
                 });        
-                this.OPTION1( () => {
-                    this.SUBRULE1(this.arrayAccess);//#arrayAccess
-                });
-                this.OPTION2( () => {
-                    this.SUBRULE1(this.methodAccessLoop);//#methodAccessLoop
-                });
             }
             },
             {ALT:() => this.SUBRULE(this.arrayOrBlockInitializer)}
-            //{ALT:() => this.SUBRULE(this.xCommandsEmbedded)}
+            
         ]);
     });
+    public identifierAtomic = this.RULE("identifierAtomic", () => {
+       /* this.OR([
+        {
+            GATE: !this.inXCommand, ALT:() => this.SUBRULE(this.xCommandsEmbedded)
+        }    ,
+        {ALT:() => {*/
+            this.OPTION( () => {
+                this.SUBRULE(this.arguments); //#FunctionCall
+            });        
+            this.OPTION1( () => {
+                this.SUBRULE(this.arrayAccess);//#arrayAccess
+            });
+            this.OPTION2( () => {
+                this.SUBRULE(this.methodAccessLoop);//#methodAccessLoop
+            });                                
+        /*}
+    }
+        ]);*/
+    });
+
 
     public methodAccessLoop = this.RULE("methodAccessLoop", () => {
         this.MANY( () => {
@@ -844,11 +860,36 @@ methodAccessLoop:
     //-----------------------------------------------------------
     // xCommands Embedded
     //-----------------------------------------------------------
- /*   public xCommandsEmbedded = this.RULE("xCommandsEmbedded", () => {
-        this.OR([
-            {ALT:() => this.SUBRULE(this.paramtypeRule)}
-        ]);
-    
+
+    /*
+    public chStatement = this.RULE("chStatement", () => {        
+        this.SUBRULE(this.chIdentifier);
+        this.MANY(() => {
+            this.OR([
+                { ALT: () => this.SUBRULE1(this.expression)},
+                { ALT: () => this.SUBRULE1(this.chIdentifier)}
+            ]);
+        })    
+        
+        this.SUBRULE(this.crlfStatement);
+    });
+*/
+    public chIdentifier = this.RULE("chIdentifier", () => {
+        this.CONSUME(Identifier);    
+        this.MANY(() => {
+            this.CONSUME1(DoToken);
+            this.CONSUME2(Identifier);    
+        })    ;
+
+    });
+    /*public inXCommand = false;
+    public xCommandsEmbedded = this.RULE("xCommandsEmbedded", () => {
+        this.inXCommand = true;
+        this.MANY(() => {
+                this.SUBRULE(this.atomicExpression);
+        })    
+        this.inXCommand = false;
+        this.SUBRULE(this.crlfStatement);
     });*/
 /*    public paramtypeRule = this.RULE("paramtypeRule", () => {
         this.CONSUME(ParamTypeToken);
